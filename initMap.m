@@ -1,4 +1,5 @@
-function mapMatrix = initMap()
+function [start, goal, mapSize, mapMatrix] = initMap()
+close all
 figure;
 axis equal
 grid on
@@ -23,8 +24,7 @@ plot(goal(1), goal(2), 's', 'MarkerFaceColor', [0.4660 0.6740 0.1880], ...
                 'MarkerSize', 10, 'Color', [0.4660 0.6740 0.1880]);
 
 % Obstacles
-obsDims = [1.1 0.12;
-            0.3 0.2];
+obsDims = [1.1 0.12; 0.3 0.2];
 numObs = 5;
 obsChoices = [1, 1, 2, 2, 2];
 for i=1:numObs
@@ -43,7 +43,8 @@ for i=1:numObs
        end
    end
 end
-figure
-imshow(mapMatrix);
+
+mapMatrix(start(1)*100-10:start(1)*100+10, start(2)*100-10:start(2)*100+10) = 0;
+mapMatrix(goal(1)*100-10:goal(1)*100+10, goal(2)*100-10:goal(2)*100+10) = 0;
 end
 

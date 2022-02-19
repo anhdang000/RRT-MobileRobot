@@ -1,32 +1,44 @@
 clear
-close all
-
 % All dimensions are in meter
 % Rectangle are shaped by width and height
 %% Initialize environment
-mapMatrix = initMap();
-pause;
+[start, goal, mapSize, mapMatrix] = initMap();
+rrt = RRTGraph(start, goal, mapMatrix, mapSize);
+
+biasIter = 4;
+iter = 0;
+while ~rrt.goalFlag
+    if mod(iter, biasIter) == 0
+        rrt = rrt.bias(goal);
+        plot(rrt.treeCoors(end, 1), rrt.treeCoors(end, 2), 'c.');
+    else
+        rrt = rrt.expand();
+        plot(rrt.treeCoors(end, 1), rrt.treeCoors(end, 2), 'c.');
+    end
+    
+    rrt = rrt.getPath2Goal();
+    
+    iter = iter + 1;
+    drawnow
+end
+
+pathCoors = rrt.getPathCoors();
+plot(pathCoors(:, 1), pathCoors(:, 2), 'LineWidth', 2)
+
 %% Path planning
 
 %% Optimize waypoint
 
 %% Robot initialization and Path following
-path = [2.00    1.00;
-        1.25    1.75;
-        5.25    8.25;
-        7.25    8.75;
-        11.75   10.75;
-        12.00   10.00];
-    
-robotInitialLocation = path(1,:);
-robotGoal = path(end,:);
+robotInitialLocation = pathCoors(1,:);
+robotGoal = pathCoors(end,:);
 initialOrientation = 0;
 robotCurrentPose = [robotInitialLocation initialOrientation]';
 robot = differentialDriveKinematics("TrackWidth", 1, "VehicleInputs", "VehicleSpeedHeadingRate");
 
 % Define path following controller
 controller = controllerPurePursuit;
-controller.Waypoints = path;
+controller.Waypoints = pathCoors;
 controller.DesiredLinearVelocity = 0.6; % m/s
 controller.MaxAngularVelocity = 2; % rad/s
 controller.LookaheadDistance = 0.3;
@@ -41,7 +53,7 @@ vizRate = rateControl(1/sampleTime);
 
 
 % Determine vehicle frame size to most closely represent vehicle with plotTransforms
-frameSize = robot.TrackWidth/0.8;
+frameSize = robot.TrackWidth/1.5;
 
 while( distanceToGoal > goalRadius )
     
@@ -62,7 +74,7 @@ while( distanceToGoal > goalRadius )
     
     % Plot path each instance so that it stays persistent while robot mesh
     % moves
-    plot(path(:,1), path(:,2),"k--o")
+    plot(pathCoors(:,1), pathCoors(:,2),"k--o")
     axis equal
     grid on
     hold all
@@ -72,9 +84,8 @@ while( distanceToGoal > goalRadius )
     plotRot = axang2quat([0 0 1 robotCurrentPose(3)]);
     plotTransforms(plotTrVec', plotRot, "MeshFilePath", "groundvehicle.stl", "Parent", gca, "View","2D", "FrameSize", frameSize);
     light;
-    xlim([0 13])
-    ylim([0 13])
-    
+    xlim([0 4]);
+    ylim([0 4]);
     waitfor(vizRate);
 end
 
