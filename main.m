@@ -33,8 +33,7 @@ vizRate = rateControl(1/sampleTime);
 
 % Initialize the figure
 figure
-axis equal
-grid on
+
 
 % Determine vehicle frame size to most closely represent vehicle with plotTransforms
 frameSize = robot.TrackWidth/0.8;
@@ -59,6 +58,8 @@ while( distanceToGoal > goalRadius )
     % Plot path each instance so that it stays persistent while robot mesh
     % moves
     plot(path(:,1), path(:,2),"k--o")
+    axis equal
+    grid on
     hold all
     
     % Plot the path of the robot as a set of transforms
