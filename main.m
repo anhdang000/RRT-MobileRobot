@@ -4,7 +4,7 @@ close all
 % All dimensions are in meter
 % Rectangle are shaped by width and height
 %% Initialize environment
-map_matrix = init_map();
+mapMatrix = initMap();
 pause;
 %% Path planning
 
