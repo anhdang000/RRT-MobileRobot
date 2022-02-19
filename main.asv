@@ -1,11 +1,11 @@
 clear
 close all
 
-% All dimensions are in meter
-% Rectangle are shaped by width and height
+% Al 
 %% Initialize environment
-map_matrix = init_map();
-pause;
+init();
+
+
 %% Path planning
 
 %% Optimize waypoint
