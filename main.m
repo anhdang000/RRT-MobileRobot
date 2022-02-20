@@ -1,6 +1,7 @@
 clear
 % All dimensions are in meter
 % Rectangle are shaped by width and height
+
 %% Initialize environment
 [start, goal, mapSize, mapMatrix, obstacles] = initMap();
 
@@ -12,10 +13,16 @@ iter = 0;
 while ~rrt.goalFlag
     if mod(iter, biasIter) == 0
         rrt = rrt.bias(goal);
-        plot(rrt.treeCoors(end, 1), rrt.treeCoors(end, 2), 'c.');
+        if size(rrt.treeCoors, 1) ~= 1
+            branch = [rrt.treeCoors(end, :); rrt.treeCoors(rrt.parent(end), :)];
+            plot(branch(:, 1), branch(:, 2), 'c-.');
+        end
     else
         rrt = rrt.expand();
-        plot(rrt.treeCoors(end, 1), rrt.treeCoors(end, 2), 'c.');
+        if size(rrt.treeCoors, 1) ~= 1
+            branch = [rrt.treeCoors(end, :); rrt.treeCoors(rrt.parent(end), :)];
+            plot(branch(:, 1), branch(:, 2), 'c-.');
+        end
     end
     
     rrt = rrt.getPath2Goal();

@@ -18,7 +18,7 @@ classdef RRTGraph
         goalFlag = 0
         path = []
         
-        dMax = 0.1
+        dMax = 0.3
     end
     
     methods
@@ -132,12 +132,16 @@ classdef RRTGraph
         function obj = getPath2Goal(obj)
             if obj.goalFlag
                 obj.path = obj.goalState;
-                newPos = obj.parent(obj.goalState);
-                while newPos ~= 1
-                    obj.path = [obj.path; newPos];
-                    newPos = obj.parent(newPos);
+                try
+                    newPos = obj.parent(obj.goalState);
+                    while newPos ~= 1
+                        obj.path = [obj.path; newPos];
+                        newPos = obj.parent(newPos);
+                    end
+                    obj.path = [obj.path; 1];
+                catch
+                    obj.goalFlag = 0;
                 end
-                obj.path = [obj.path; 1];
             end
         end
         
