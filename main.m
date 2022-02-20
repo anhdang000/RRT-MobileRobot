@@ -33,6 +33,10 @@ plot(optimalPathCoors(:, 1), optimalPathCoors(:, 2), ...
     'LineWidth', 2, 'Color', [0 0.4470 0.7410]);
 path = optimalPathCoors;
 
+saveas(gcf,'assets/RRT_result.png')
+
+pause(1);
+
 %% Robot initialization and Path following
 robotInitialLocation = path(1,:);
 robotGoal = path(end,:);
@@ -80,10 +84,11 @@ while( distanceToGoal > goalRadius )
     
     % Plot path each instance so that it stays persistent while robot mesh
     % moves
-    plot(path(:, 1), path(:, 2), 'LineWidth', 2, 'Color', [0 0.4470 0.7410]);
+    plot(pathCoors(:, 1), pathCoors(:, 2), 'k-.');
     axis equal
     grid on
     hold all
+    plot(path(:, 1), path(:, 2), 'LineWidth', 2, 'Color', [0 0.4470 0.7410]);
     drawMapInLoop(start, goal, obstacles);
     plot(trajectory(:, 1), trajectory(:, 2), ...
     'LineWidth', 2, 'Color', [0.3010 0.7450 0.9530]);
@@ -95,6 +100,9 @@ while( distanceToGoal > goalRadius )
     light;
     xlim([0 4]);
     ylim([0 4]);
+    xticks(0:1:4);
+    yticks(0:1:4);
     waitfor(vizRate);
 end
 
+saveas(gcf,'assets/final_result.png')

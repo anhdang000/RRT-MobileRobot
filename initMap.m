@@ -7,6 +7,8 @@ hold on
 
 xlim([0 4]);
 ylim([0 4]);
+xticks(0:1:4);
+yticks(0:1:4);
 
 mapSize = [4, 4]; % [width, height]
 start = [0.5 0.5];
