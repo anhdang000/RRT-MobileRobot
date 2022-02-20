@@ -5,7 +5,7 @@ classdef RRTGraph
         % Map
         start
         goal
-        mapMatrix
+        mapMask
         mapW
         mapH
         
@@ -22,10 +22,10 @@ classdef RRTGraph
     end
     
     methods
-        function obj = RRTGraph(start, goal, mapMatrix, mapSize)
+        function obj = RRTGraph(start, goal, mapMask, mapSize)
             obj.start = start;
             obj.goal = goal;
-            obj.mapMatrix = mapMatrix;
+            obj.mapMask = mapMask;
             obj.mapW = mapSize(1);
             obj.mapH = mapSize(2);
             obj.treeCoors = start;
@@ -77,13 +77,13 @@ classdef RRTGraph
             % flag = 1 when the node is valid (NOT collide with any obstacles)
             n = getNumNodes(obj);
             lastNode = obj.treeCoors(n, :);
-            checkMat = zeros(size(obj.mapMatrix));
+            checkMat = zeros(size(obj.mapMask));
             try
             checkMat(ceil(lastNode(2)*100), ceil(lastNode(1)*100)) = 1;
             catch
                 disp(lastNode);
             end
-            flag = ~max(checkMat .* obj.mapMatrix, [], 'all');
+            flag = ~max(checkMat .* obj.mapMask, [], 'all');
             
             if ~flag
                 obj = removeNode(obj, n);
@@ -91,11 +91,11 @@ classdef RRTGraph
         end
         
         function boolVal = isCrossObstacles(obj, node1, node2)
-            checkMat = zeros(size(obj.mapMatrix));
+            checkMat = zeros(size(obj.mapMask));
             checkMat = insertShape(checkMat, 'Line', round([node1*100 node2*100]), ...
                 'LineWidth', 2, 'Color', 'white');
             checkMat = checkMat(:, :, 1);
-            boolVal = max(checkMat .* obj.mapMatrix, [], 'all');
+            boolVal = max(checkMat .* obj.mapMask, [], 'all');
         end
         
         function obj = connect(obj, n1, n2)
@@ -165,11 +165,11 @@ classdef RRTGraph
                 while secondIdx <= numPoints
                     p1 = pathCoors(firstIdx, :);
                     p2 = pathCoors(secondIdx, :);
-                    checkMat = zeros(size(obj.mapMatrix));
+                    checkMat = zeros(size(obj.mapMask));
                     checkMat = insertShape(checkMat, 'Line', round([p1*100 p2*100]), ...
                         'LineWidth', 2, 'Color', 'white');
                     checkMat = checkMat(:, :, 1);
-                    isCrossObstacles = max(checkMat .* obj.mapMatrix, [], 'all');
+                    isCrossObstacles = max(checkMat .* obj.mapMask, [], 'all');
                     if isCrossObstacles
                         secondIdx = secondIdx - 1;
                         firstIdx = secondIdx;

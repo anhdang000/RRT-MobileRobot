@@ -2,11 +2,11 @@ clear
 % All dimensions are in meter
 % Rectangle are shaped by width and height
 
-%% Initialize environment
-[start, goal, mapSize, mapMatrix, obstacles] = initMap();
+%% Load environment
+[start, goal, mapSize, mapMask, obstacles] = loadMapFromFile('variables/mapComponents.mat');
 
 %% Path planning
-rrt = RRTGraph(start, goal, mapMatrix, mapSize);
+rrt = RRTGraph(start, goal, mapMask, mapSize);
 
 biasIter = 4;
 iter = 0;

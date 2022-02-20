@@ -1,8 +1,8 @@
 clear
 close all
 
-[start, goal, mapSize, mapMatrix] = initMap();
-rrt = RRTGraph(start, goal, mapMatrix, mapSize);
+[start, goal, mapSize, mapMask, obstacles] = initMap();
+rrt = RRTGraph(start, goal, mapMask, mapSize);
 
 biasIter = 3;
 iter = 0;
@@ -33,3 +33,5 @@ plot(pathCoors(:, 1), pathCoors(:, 2), 'k-.');
 optimalPathCoors = rrt.optimizePath(pathCoors);
 plot(optimalPathCoors(:, 1), optimalPathCoors(:, 2), ...
     'LineWidth', 2, 'Color', [0 0.4470 0.7410]);
+
+save('variables/mapComponents.mat', 'start', 'goal', 'mapSize', 'mapMask', 'obstacles');

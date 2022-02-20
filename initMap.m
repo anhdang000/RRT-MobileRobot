@@ -1,4 +1,4 @@
-function [start, goal, mapSize, mapMatrix, obstacles] = initMap()
+function [start, goal, mapSize, mapMask, obstacles] = initMap()
 close all
 figure;
 axis equal
@@ -16,9 +16,9 @@ goal = [3.5, 3.5];
 obstacles = [];
 
 %  Create map matrix
-mapMatrix = zeros(mapSize(1)*100, mapSize(2)*100);
-mapMatrix(start(1)*100-10:start(1)*100+10, start(2)*100-10:start(2)*100+10) = 1;
-mapMatrix(goal(1)*100-10:goal(1)*100+10, goal(2)*100-10:goal(2)*100+10) = 1;
+mapMask = zeros(mapSize(1)*100, mapSize(2)*100);
+mapMask(start(1)*100-10:start(1)*100+10, start(2)*100-10:start(2)*100+10) = 1;
+mapMask(goal(1)*100-10:goal(1)*100+10, goal(2)*100-10:goal(2)*100+10) = 1;
 
 % Plot start and goal
 plot(start(1), start(2), 'o', 'MarkerFaceColor', [0 0.4470 0.7410], ...
@@ -40,12 +40,12 @@ for i=1:numObs
        upper_y = randi([5, mapSize(2)*100 - obsDim(2)*100]);
        lower_x = floor(upper_x+obsDim(1)*100);
        lower_y = floor(upper_y+obsDim(2)*100);
-       if max(mapMatrix(upper_y:lower_y, upper_x:lower_x), [], 'all') == 0
+       if max(mapMask(upper_y:lower_y, upper_x:lower_x), [], 'all') == 0
            padded_upper_x = max(1, upper_x - paddingObs);
            padded_upper_y = max(1, upper_y - paddingObs);
            padded_lower_x = min(mapSize(1)*100, lower_x + paddingObs);
            padded_lower_y = min(mapSize(2)*100, lower_y + paddingObs);
-           mapMatrix(padded_upper_y:padded_lower_y, padded_upper_x:padded_lower_x) = 1;
+           mapMask(padded_upper_y:padded_lower_y, padded_upper_x:padded_lower_x) = 1;
            rectangle('Position',[upper_x/100 upper_y/100 obsDim(1) obsDim(2)], 'FaceColor',[1 0.9 0]);
            obstacles = [obstacles; upper_x/100 upper_y/100 obsDim(1) obsDim(2)];
            break
@@ -53,7 +53,7 @@ for i=1:numObs
    end
 end
 
-mapMatrix(start(1)*100-10:start(1)*100+10, start(2)*100-10:start(2)*100+10) = 0;
-mapMatrix(goal(1)*100-10:goal(1)*100+10, goal(2)*100-10:goal(2)*100+10) = 0;
+mapMask(start(1)*100-10:start(1)*100+10, start(2)*100-10:start(2)*100+10) = 0;
+mapMask(goal(1)*100-10:goal(1)*100+10, goal(2)*100-10:goal(2)*100+10) = 0;
 end
 
