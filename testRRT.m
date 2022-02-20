@@ -22,5 +22,8 @@ while ~rrt.goalFlag
 end
 
 pathCoors = rrt.getPathCoors();
-plot(pathCoors(:, 1), pathCoors(:, 2), 'LineWidth', 2)
+plot(pathCoors(:, 1), pathCoors(:, 2), 'k-.');
 
+optimalPathCoors = rrt.optimizePath(pathCoors);
+plot(optimalPathCoors(:, 1), optimalPathCoors(:, 2), ...
+    'LineWidth', 2, 'Color', [0 0.4470 0.7410]);

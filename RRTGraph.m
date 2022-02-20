@@ -148,11 +148,40 @@ classdef RRTGraph
                 node = obj.treeCoors(n, :);
                 pathCoors = [pathCoors; node];
             end
+            pathCoors = flip(pathCoors, 1);
         end
         
-        function optimalPathCoors = optimizePath(pathCoors)
-            % not completed
-            optimalPathCoors = pathCoors;
+        function optimalPathCoors = optimizePath(obj, pathCoors)
+            numPoints = size(pathCoors, 1);
+            
+            firstIdx = 1;
+            optimalPathCoors = pathCoors(firstIdx, :);
+            while 1
+                secondIdx = firstIdx+1;
+                while secondIdx <= numPoints
+                    p1 = pathCoors(firstIdx, :);
+                    p2 = pathCoors(secondIdx, :);
+                    checkMat = zeros(size(obj.mapMatrix));
+                    checkMat = insertShape(checkMat, 'Line', round([p1*100 p2*100]), ...
+                        'LineWidth', 2, 'Color', 'white');
+                    checkMat = checkMat(:, :, 1);
+                    isCrossObstacles = max(checkMat .* obj.mapMatrix, [], 'all');
+                    if isCrossObstacles
+                        secondIdx = secondIdx - 1;
+                        firstIdx = secondIdx;
+                        optimalPathCoors = [optimalPathCoors; pathCoors(secondIdx, :)];
+                        break
+                    elseif secondIdx == numPoints
+                        optimalPathCoors = [optimalPathCoors; pathCoors(secondIdx, :)];
+                        break
+                    else
+                        secondIdx = secondIdx + 1;
+                    end
+                end
+                if secondIdx == numPoints
+                    break
+                end
+            end
         end
         
         function obj = bias(obj, nodeGoal)
