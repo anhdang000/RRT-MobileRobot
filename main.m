@@ -8,7 +8,7 @@ clear
 %% Path planning
 rrt = RRTGraph(start, goal, mapMask, mapSize);
 
-biasIter = 4;
+biasIter = 3;
 iter = 0;
 while ~rrt.goalFlag
     if mod(iter, biasIter) == 0

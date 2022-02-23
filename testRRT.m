@@ -4,7 +4,7 @@ close all
 [start, goal, mapSize, mapMask, obstacles] = initMap();
 rrt = RRTGraph(start, goal, mapMask, mapSize);
 
-biasIter = 3;
+biasIter = 5;
 iter = 0;
 while ~rrt.goalFlag
     if mod(iter, biasIter) == 0
